@@ -1,30 +1,34 @@
 import flaskr.models
-
 from flask import Flask
 from config import DevelopmentConfig
 from flaskr.extensions import migrate, api, cors, jwt
 from flaskr.db import db
 
+# Import your routes
 from flaskr.routes.auth_route import bp as auth_route
 from flaskr.routes.user_route import bp as user_route
 from flaskr.routes.tag_route import bp as tag_route
 from flaskr.routes.task_route import bp as task_route
 
-
 def create_app(test_config=None):
     app = Flask(__name__)
 
+    # 1. Load Configuration
     if test_config is None:
         app.config.from_object(DevelopmentConfig)
     else:
         app.config.from_object(test_config)
 
+    # 2. Initialize Extensions
     db.init_app(app)
     migrate.init_app(app, db)
     api.init_app(app)
-    cors.init_app(app)
     jwt.init_app(app)
+    
+    # FIX: Move CORS inside here and configure it for port 5173
+    cors.init_app(app, resources={r"/api/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
 
+    # 3. Register Blueprints
     api.register_blueprint(auth_route, url_prefix="/api/v1")
     api.register_blueprint(user_route, url_prefix="/api/v1")
     api.register_blueprint(tag_route, url_prefix="/api/v1")
