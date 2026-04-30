@@ -3,14 +3,18 @@ from flask_smorest import Blueprint
 from flask.views import MethodView
 from flaskr.schemas.schema import UserSchema
 from flaskr.controllers.user_controller import UserController
+from flaskr.utils import role_required
 
 bp = Blueprint("users", __name__)
 
 
 @bp.route("/users")
 class Users(MethodView):
+    @jwt_required()
+    @role_required("admin")
     @bp.response(200, UserSchema(many=True))
     def get(self):
+        """Admin route (JWT + admin role required)"""
         return UserController.get_all()
 
     @bp.arguments(UserSchema)
@@ -21,8 +25,11 @@ class Users(MethodView):
 
 @bp.route("/users/<user_id>")
 class UserById(MethodView):
+    @jwt_required()
+    @role_required("admin")
     @bp.response(200, UserSchema)
     def get(self, user_id):
+        """Admin route (JWT + admin role required)"""
         return UserController.get_by_id(user_id)
 
 

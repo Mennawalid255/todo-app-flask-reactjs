@@ -5,7 +5,6 @@ from sqlalchemy.exc import NoResultFound, SQLAlchemyError
 from flaskr.db import db
 from flaskr.models.user_model import UserModel
 from flaskr.utils import generate_password
-from werkzeug.security import generate_password_hash
 
 
 class UserController:
@@ -43,7 +42,7 @@ class UserController:
                 if user_registered.email == data["email"]:
                     abort(409, message="Email already registered")
 
-            new_user = UserModel(**data)
+            new_user = UserModel(**data, role="user")
 
             new_user.password = generate_password(data["password"])
 

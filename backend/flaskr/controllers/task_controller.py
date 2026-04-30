@@ -1,4 +1,4 @@
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import get_jwt, get_jwt_identity
 from flask_smorest import abort
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound, SQLAlchemyError
@@ -11,7 +11,7 @@ class TaskController:
     @staticmethod
     def get_all_on_user():
         try:
-            user_id = get_jwt_identity()
+            user_id = int(get_jwt_identity())
 
             return (
                 db.session.query(
@@ -22,7 +22,7 @@ class TaskController:
                     TaskModel.created_at,
                     TagModel.name.label("tag_name"),
                 )
-                .where(user_id == user_id)
+                .where(TaskModel.user_id == user_id)
                 .join(TagModel, TaskModel.tag_id == TagModel.id)
                 .all()
             )
@@ -32,7 +32,7 @@ class TaskController:
     @staticmethod
     def create(data):
         try:
-            user_id = get_jwt_identity()
+            user_id = int(get_jwt_identity())
 
             print(data)
 
@@ -49,9 +49,11 @@ class TaskController:
     @staticmethod
     def update(data, task_id):
         try:
-            task = db.session.execute(
-                select(TaskModel).where(TaskModel.id == task_id)
-            ).scalar_one()
+            query = select(TaskModel).where(TaskModel.id == task_id)
+            if get_jwt().get("role") != "admin":
+                query = query.where(TaskModel.user_id == int(get_jwt_identity()))
+
+            task = db.session.execute(query).scalar_one()
 
             task.title = data["title"]
             task.content = data["content"]
@@ -68,9 +70,11 @@ class TaskController:
     @staticmethod
     def delete(task_id):
         try:
-            task = db.session.execute(
-                select(TaskModel).where(TaskModel.id == task_id)
-            ).scalar_one()
+            query = select(TaskModel).where(TaskModel.id == task_id)
+            if get_jwt().get("role") != "admin":
+                query = query.where(TaskModel.user_id == int(get_jwt_identity()))
+
+            task = db.session.execute(query).scalar_one()
 
             db.session.delete(task)
             db.session.commit()
