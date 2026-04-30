@@ -5,9 +5,34 @@ from sqlalchemy.exc import NoResultFound, SQLAlchemyError
 from flaskr.db import db
 from flaskr.models.tag_model import TagModel
 from flaskr.models.task_model import TaskModel
+from flaskr.models.user_model import UserModel
 
 
 class TaskController:
+    MANAGER_ROLES = ["admin", "admin_manager"]
+
+    @staticmethod
+    def get_all():
+        try:
+            return (
+                db.session.query(
+                    TaskModel.id,
+                    TaskModel.title,
+                    TaskModel.content,
+                    TaskModel.status,
+                    TaskModel.created_at,
+                    TaskModel.user_id,
+                    UserModel.username.label("username"),
+                    UserModel.email.label("user_email"),
+                    TagModel.name.label("tag_name"),
+                )
+                .join(UserModel, TaskModel.user_id == UserModel.id)
+                .join(TagModel, TaskModel.tag_id == TagModel.id)
+                .all()
+            )
+        except SQLAlchemyError:
+            abort(500, message="Internal server error while fetching tasks")
+
     @staticmethod
     def get_all_on_user():
         try:
@@ -50,7 +75,7 @@ class TaskController:
     def update(data, task_id):
         try:
             query = select(TaskModel).where(TaskModel.id == task_id)
-            if get_jwt().get("role") != "admin":
+            if get_jwt().get("role") not in TaskController.MANAGER_ROLES:
                 query = query.where(TaskModel.user_id == int(get_jwt_identity()))
 
             task = db.session.execute(query).scalar_one()
@@ -71,7 +96,7 @@ class TaskController:
     def delete(task_id):
         try:
             query = select(TaskModel).where(TaskModel.id == task_id)
-            if get_jwt().get("role") != "admin":
+            if get_jwt().get("role") not in TaskController.MANAGER_ROLES:
                 query = query.where(TaskModel.user_id == int(get_jwt_identity()))
 
             task = db.session.execute(query).scalar_one()

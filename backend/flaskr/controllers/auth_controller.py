@@ -29,7 +29,12 @@ class AuthController:
                 additional_claims={"role": user_registered.role},
             )
 
-            return {"token": token, "role": user_registered.role}
+            return {
+                "token": token,
+                "role": user_registered.role,
+                "userId": user_registered.id,
+                "username": user_registered.username,
+            }
 
         except SQLAlchemyError:
             abort(500, message="Internal server error while signing in")

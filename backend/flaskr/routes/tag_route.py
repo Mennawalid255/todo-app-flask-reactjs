@@ -16,7 +16,7 @@ class Tags(MethodView):
 
     @bp.arguments(TagSchema)
     @jwt_required()
-    @role_required("admin")
+    @role_required("admin", "admin_manager")
     @bp.response(201)
     def post(self, data):
         """Admin route (JWT + admin role required)"""

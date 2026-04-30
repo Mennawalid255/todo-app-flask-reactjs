@@ -55,7 +55,7 @@ class UserController:
     @staticmethod
     def delete():
         try:
-            user_id = get_jwt_identity()
+            user_id = int(get_jwt_identity())
 
             user = db.session.execute(
                 select(UserModel).where(UserModel.id == user_id)
@@ -63,6 +63,32 @@ class UserController:
 
             db.session.delete(user)
             db.session.commit()
+        except NoResultFound:
+            abort(404, message="User not found")
+        except SQLAlchemyError:
+            db.session.rollback()
+            abort(500, message="Internal server error while deleting user")
+
+    @staticmethod
+    def delete_by_id(user_id):
+        try:
+            current_user_id = int(get_jwt_identity())
+            target_user_id = int(user_id)
+
+            if current_user_id == target_user_id:
+                abort(400, message="Admins should use account deletion for their own account")
+
+            user = db.session.execute(
+                select(UserModel).where(UserModel.id == target_user_id)
+            ).scalar_one()
+
+            if user.role in ["admin", "admin_manager"]:
+                abort(400, message="Manager admin accounts cannot be deleted here")
+
+            db.session.delete(user)
+            db.session.commit()
+        except ValueError:
+            abort(400, message="Invalid user id")
         except NoResultFound:
             abort(404, message="User not found")
         except SQLAlchemyError:
