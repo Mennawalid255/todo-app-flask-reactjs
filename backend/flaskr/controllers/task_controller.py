@@ -22,7 +22,7 @@ class TaskController:
                     TaskModel.created_at,
                     TagModel.name.label("tag_name"),
                 )
-                .where(user_id == user_id)
+                .where(TaskModel.user_id == user_id)
                 .join(TagModel, TaskModel.tag_id == TagModel.id)
                 .all()
             )
