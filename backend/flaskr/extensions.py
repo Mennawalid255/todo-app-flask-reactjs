@@ -4,7 +4,7 @@ from flask_smorest import Api
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
-db = SQLAlchemy()  # <--- Add this
+db = SQLAlchemy()  
 migrate = Migrate()
 api = Api()
 cors = CORS()

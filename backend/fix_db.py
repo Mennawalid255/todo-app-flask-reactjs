@@ -6,10 +6,10 @@ from flaskr.models.tag_model import TagModel
 
 # Create a tiny, temporary app just to build the database
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db' # Or your specific URI
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Manually register the DB to THIS specific app instance
+
 db.init_app(app)
 
 with app.app_context():

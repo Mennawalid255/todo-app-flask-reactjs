@@ -3,6 +3,7 @@ from flask_smorest import Blueprint
 from flask.views import MethodView
 from flaskr.schemas.schema import UserSchema
 from flaskr.controllers.user_controller import UserController
+from flaskr.decorators import role_required
 
 bp = Blueprint("users", __name__)
 

@@ -1,22 +1,19 @@
-import hashlib
-import os
+import bcrypt
 from functools import wraps
 from flask_jwt_extended import get_jwt, verify_jwt_in_request
 from flask_smorest import abort
 
+PEPPER = "mysupersecretpepper123"
 
 def generate_password(password):
-    
-    salt = os.urandom(16).hex()
-    hashed = hashlib.sha256((salt + password).encode()).hexdigest()
-    
-    return f"{salt}:{hashed}"
+    password_peppered = (password + PEPPER).encode()
+    hashed = bcrypt.hashpw(password_peppered, bcrypt.gensalt())
+    return hashed.decode("utf-8")  # store as string in DB
 
 
 def check_password(stored_password, password):
-    salt, stored_hash = stored_password.split(":")
-    login_hash = hashlib.sha256((salt + password).encode()).hexdigest()
-    return login_hash == stored_hash
+    password_peppered = (password + PEPPER).encode()
+    return bcrypt.checkpw(password_peppered, stored_password.encode("utf-8"))
 
 
 def role_required(*allowed_roles):
