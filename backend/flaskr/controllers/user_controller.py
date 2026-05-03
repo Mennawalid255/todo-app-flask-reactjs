@@ -6,6 +6,7 @@ from flaskr.db import db
 from flaskr.models.user_model import UserModel
 from flaskr.utils import generate_password
 from werkzeug.security import generate_password_hash
+from werkzeug.exceptions import HTTPException
 
 
 class UserController:
@@ -50,9 +51,9 @@ class UserController:
             db.session.add(new_user)
             db.session.commit()
         except HTTPException:
-            raise                       # ← let abort() pass through
+            raise                 
         except Exception as e:
-            print("ERROR:", e)          # ← now you'll see the real error
+            print("ERROR:", e)       
             db.session.rollback()
             abort(500, message=str(e))
 
