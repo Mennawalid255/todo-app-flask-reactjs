@@ -24,10 +24,18 @@ class AuthController:
             if not check_password(user_registered.password, password):
                 abort(401, message="Incorrect credentials")
 
-            token = create_access_token(identity=str(user_registered.id))
+            token = create_access_token(
+                identity=str(user_registered.id),
+                additional_claims={"role": user_registered.role},
+            )
 
-            return {"token": token}
+            return {
+                "token": token,
+                "role": user_registered.role,
+                "userId": user_registered.id,
+                "username": user_registered.username,
+            }
 
         except Exception as e:
-            print("🔥 ERROR:", str(e))
+            print("ERROR:", str(e))
             abort(500, message=str(e))
