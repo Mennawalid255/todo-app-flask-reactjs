@@ -5,6 +5,7 @@ from sqlalchemy.exc import NoResultFound, SQLAlchemyError
 from flaskr.db import db
 from flaskr.models.user_model import UserModel
 from flaskr.utils import generate_password
+from werkzeug.exceptions import HTTPException
 
 
 class UserController:
@@ -43,31 +44,16 @@ class UserController:
                     abort(409, message="Email already registered")
 
             new_user = UserModel(**data, role="user")
-
             new_user.password = generate_password(data["password"])
 
             db.session.add(new_user)
             db.session.commit()
-        except SQLAlchemyError:
+        except HTTPException:
+            raise                       # ← let abort() pass through
+        except Exception as e:
+            print("ERROR:", e)          # ← now you'll see the real error
             db.session.rollback()
-            abort(500, message="Internal server error while creating user")
-
-    @staticmethod
-    def delete():
-        try:
-            user_id = int(get_jwt_identity())
-
-            user = db.session.execute(
-                select(UserModel).where(UserModel.id == user_id)
-            ).scalar_one()
-
-            db.session.delete(user)
-            db.session.commit()
-        except NoResultFound:
-            abort(404, message="User not found")
-        except SQLAlchemyError:
-            db.session.rollback()
-            abort(500, message="Internal server error while deleting user")
+            abort(500, message=str(e))
 
     @staticmethod
     def delete_by_id(user_id):

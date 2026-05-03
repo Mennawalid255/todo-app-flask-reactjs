@@ -1,15 +1,22 @@
+import hashlib
+import os
 from functools import wraps
 from flask_jwt_extended import get_jwt, verify_jwt_in_request
 from flask_smorest import abort
-from werkzeug.security import generate_password_hash, check_password_hash
 
 
 def generate_password(password):
-    return generate_password_hash(password, salt_length=10)
+    
+    salt = os.urandom(16).hex()
+    hashed = hashlib.sha256((salt + password).encode()).hexdigest()
+    
+    return f"{salt}:{hashed}"
 
 
-def check_password(password_hash, password):
-    return check_password_hash(password_hash, password)
+def check_password(stored_password, password):
+    salt, stored_hash = stored_password.split(":")
+    login_hash = hashlib.sha256((salt + password).encode()).hexdigest()
+    return login_hash == stored_hash
 
 
 def role_required(*allowed_roles):
