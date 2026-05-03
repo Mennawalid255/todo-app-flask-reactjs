@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from sqlalchemy import String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from flaskr.db import db
@@ -6,6 +7,11 @@ from flaskr.security import (
     permissions_for_role,
     serialize_permission_overrides,
 )
+=======
+from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from flaskr.db import db
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
 
 
 class UserModel(db.Model):
@@ -21,16 +27,20 @@ class UserModel(db.Model):
     )
     password: Mapped[str] = mapped_column(String(300), nullable=False)
     role: Mapped[str] = mapped_column(String(20), nullable=False, default="user")
+<<<<<<< HEAD
     permission_overrides_raw: Mapped[str] = mapped_column(
         "permission_overrides",
         Text(),
         nullable=False,
         default='{"grants": [], "revokes": []}',
     )
+=======
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
 
     tasks = relationship(
         "TaskModel", back_populates="user", cascade="all, delete-orphan"
     )
+<<<<<<< HEAD
 
     @property
     def custom_permissions(self):
@@ -44,3 +54,6 @@ class UserModel(db.Model):
         self.permission_overrides_raw = serialize_permission_overrides(
             {"grants": grants or [], "revokes": revokes or []}
         )
+=======
+    role = db.Column(db.String(20), nullable=False, default="user") 
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f

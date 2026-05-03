@@ -30,7 +30,10 @@ export const useDeleteTaskMutation = () => {
     mutationFn: deleteTaskAPI,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+<<<<<<< HEAD
       queryClient.invalidateQueries({ queryKey: ["admin-tasks"] });
+=======
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
     },
   });
 };

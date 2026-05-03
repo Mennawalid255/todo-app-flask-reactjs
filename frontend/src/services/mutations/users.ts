@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+<<<<<<< HEAD
 
 import {
   deleteUserAPI,
@@ -10,6 +11,9 @@ const invalidateAdminData = (queryClient: ReturnType<typeof useQueryClient>) => 
   queryClient.invalidateQueries({ queryKey: ["admin-users"] });
   queryClient.invalidateQueries({ queryKey: ["admin-tasks"] });
 };
+=======
+import { deleteUserAPI } from "../api/users";
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
 
 export const useDeleteUserMutation = () => {
   const queryClient = useQueryClient();
@@ -17,6 +21,7 @@ export const useDeleteUserMutation = () => {
   return useMutation({
     mutationFn: deleteUserAPI,
     onSuccess: () => {
+<<<<<<< HEAD
       invalidateAdminData(queryClient);
     },
   });
@@ -40,6 +45,10 @@ export const useUpdateUserPermissionsMutation = () => {
     mutationFn: updateUserPermissionsAPI,
     onSuccess: () => {
       invalidateAdminData(queryClient);
+=======
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-tasks"] });
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
     },
   });
 };

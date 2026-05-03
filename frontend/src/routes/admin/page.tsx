@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+<<<<<<< HEAD
 import {
   Select,
   SelectContent,
@@ -33,10 +34,17 @@ import {
   useUpdateUserPermissionsMutation,
   useUpdateUserRoleMutation,
 } from "@/services/mutations/users";
+=======
+import { canManage, isAdminRole, roleLabel } from "@/lib/roles";
+import { useDeleteTaskMutation } from "@/services/mutations/tasks";
+import { useCreateTagMutation } from "@/services/mutations/tags";
+import { useDeleteUserMutation } from "@/services/mutations/users";
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
 import { useGetAdminTasksQuery } from "@/services/queries/admin-tasks";
 import { useGetTagsQuery } from "@/services/queries/tags";
 import { useGetUsersQuery } from "@/services/queries/users";
 import { useAuthStore } from "@/stores/auth-store";
+<<<<<<< HEAD
 import { Permission, PermissionOverrides, Role, Status, User } from "@/types/types";
 import { Shield, Trash } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
@@ -45,6 +53,14 @@ import { toast } from "sonner";
 
 const ROLE_OPTIONS: Role[] = ["user", "admin_viewer", "admin_manager", "admin"];
 
+=======
+import { Status } from "@/types/types";
+import { Shield, Trash } from "lucide-react";
+import { FormEvent, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { toast } from "sonner";
+
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
 const statusLabel = (status: Status) => {
   const labels: Record<Status, string> = {
     "TaskStatus.PENDING": "Pending",
@@ -55,6 +71,7 @@ const statusLabel = (status: Status) => {
   return labels[status];
 };
 
+<<<<<<< HEAD
 const createDraftMap = (users: User[]) =>
   users.reduce<Record<number, PermissionOverrides>>((accumulator, user) => {
     accumulator[user.id] = {
@@ -77,10 +94,16 @@ export const AdminPage = () => {
   const [permissionDrafts, setPermissionDrafts] = useState<
     Record<number, PermissionOverrides>
   >({});
+=======
+export const AdminPage = () => {
+  const { role, token, userId } = useAuthStore();
+  const [tagName, setTagName] = useState("");
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
   const usersQuery = useGetUsersQuery();
   const tasksQuery = useGetAdminTasksQuery();
   const tagsQuery = useGetTagsQuery();
   const deleteUserMutation = useDeleteUserMutation();
+<<<<<<< HEAD
   const updateUserRoleMutation = useUpdateUserRoleMutation();
   const updateUserPermissionsMutation = useUpdateUserPermissionsMutation();
   const deleteTaskMutation = useDeleteTaskMutation();
@@ -101,6 +124,11 @@ export const AdminPage = () => {
     setRoleDrafts(createRoleMap(users));
     setPermissionDrafts(createDraftMap(users));
   }, [usersQuery.data]);
+=======
+  const deleteTaskMutation = useDeleteTaskMutation();
+  const createTagMutation = useCreateTagMutation();
+  const canManageData = canManage(role);
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
 
   if (!isAdminRole(role)) {
     return <Navigate to="/dashboard" />;
@@ -116,8 +144,13 @@ export const AdminPage = () => {
     toast.success("Tag created");
   };
 
+<<<<<<< HEAD
   const handleDeleteUser = async (targetUserId: number) => {
     await deleteUserMutation.mutateAsync(targetUserId);
+=======
+  const handleDeleteUser = async (userId: number) => {
+    await deleteUserMutation.mutateAsync(userId);
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
     toast.success("User deleted");
   };
 
@@ -126,6 +159,7 @@ export const AdminPage = () => {
     toast.success("Task deleted");
   };
 
+<<<<<<< HEAD
   const handleRoleSave = async (targetUserId: number) => {
     await updateUserRoleMutation.mutateAsync({
       userId: targetUserId,
@@ -175,6 +209,11 @@ export const AdminPage = () => {
   return (
     <div className="grid gap-6">
       <section className="rounded-md border bg-background p-5">
+=======
+  return (
+    <div className="grid gap-6">
+      <section className="border rounded-md bg-background p-5">
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <div className="flex items-center gap-2">
@@ -184,9 +223,12 @@ export const AdminPage = () => {
             <p className="mt-1 text-sm text-muted-foreground">
               Signed in as {role ? roleLabel(role) : "Admin"}
             </p>
+<<<<<<< HEAD
             <p className="mt-2 text-xs text-muted-foreground">
               Active permissions: {(permissions ?? []).map(permissionLabel).join(", ")}
             </p>
+=======
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
           </div>
           <Button asChild variant="outline">
             <a href="/dashboard">User Dashboard</a>
@@ -194,23 +236,39 @@ export const AdminPage = () => {
         </div>
       </section>
 
+<<<<<<< HEAD
       <section className="rounded-md border bg-background p-5">
+=======
+      <section className="border rounded-md bg-background p-5">
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
         <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <h2 className="text-lg font-semibold">Tags</h2>
             <p className="text-sm text-muted-foreground">
+<<<<<<< HEAD
               Tag creation is protected by the explicit <code>create_tags</code> permission.
+=======
+              Manager admins can create tags for task categorization.
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
             </p>
           </div>
           <form className="flex gap-2" onSubmit={handleCreateTag}>
             <Input
               className="w-48"
+<<<<<<< HEAD
               disabled={!canCreateTags || createTagMutation.isPending}
+=======
+              disabled={!canManageData || createTagMutation.isPending}
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
               onChange={(event) => setTagName(event.target.value)}
               placeholder="Tag name"
               value={tagName}
             />
+<<<<<<< HEAD
             <Button disabled={!canCreateTags || createTagMutation.isPending}>
+=======
+            <Button disabled={!canManageData || createTagMutation.isPending}>
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
               Add Tag
             </Button>
           </form>
@@ -227,6 +285,7 @@ export const AdminPage = () => {
         </div>
       </section>
 
+<<<<<<< HEAD
       <section className="rounded-md border bg-background p-5">
         <div className="mb-4">
           <h2 className="text-lg font-semibold">Users</h2>
@@ -395,6 +454,50 @@ export const AdminPage = () => {
           <p className="text-sm text-muted-foreground">
             Viewer admins can inspect all tasks. Only users with <code>delete_any_task</code>
             can remove someone else&apos;s task.
+=======
+      <section className="border rounded-md bg-background p-5">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold">Users</h2>
+          <p className="text-sm text-muted-foreground">
+            Viewer admins can inspect users. Manager admins can delete accounts.
+          </p>
+        </div>
+        <div className="grid gap-3">
+          {(usersQuery.data ?? []).map((user) => (
+            <div
+              className="grid gap-3 rounded-md border p-4 md:grid-cols-[1fr_1fr_140px_auto] md:items-center"
+              key={user.id}
+            >
+              <div>
+                <p className="font-medium">{user.username}</p>
+                <p className="text-xs text-muted-foreground">ID {user.id}</p>
+              </div>
+              <p className="text-sm">{user.email}</p>
+              <span className="rounded-md bg-muted px-3 py-2 text-center text-xs font-medium">
+                {roleLabel(user.role)}
+              </span>
+              {canManageData && user.id !== userId && user.role !== "admin" && user.role !== "admin_manager" ? (
+                <DeleteConfirm
+                  description={`This will permanently delete ${user.username} and all tasks owned by this account.`}
+                  onConfirm={() => handleDeleteUser(user.id)}
+                  title="Delete user?"
+                />
+              ) : (
+                <Button disabled size="sm" variant="outline">
+                  {canManageData ? "Protected" : "View only"}
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border rounded-md bg-background p-5">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold">Tasks</h2>
+          <p className="text-sm text-muted-foreground">
+            Viewer admins can inspect all tasks. Manager admins can delete any task.
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
           </p>
         </div>
         <div className="grid gap-3">
@@ -424,7 +527,11 @@ export const AdminPage = () => {
                     {statusLabel(task.status)}
                   </span>
                 </div>
+<<<<<<< HEAD
                 {canDeleteTasks ? (
+=======
+                {canManageData ? (
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
                   <DeleteConfirm
                     description={`This will permanently delete "${task.title}".`}
                     onConfirm={() => handleDeleteTask(task.id)}

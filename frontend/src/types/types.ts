@@ -5,6 +5,7 @@ export type Tag = {
 
 export type Role = "user" | "admin" | "admin_viewer" | "admin_manager";
 
+<<<<<<< HEAD
 export type Permission =
   | "manage_own_tasks"
   | "delete_own_account"
@@ -21,11 +22,14 @@ export type PermissionOverrides = {
   revokes: Permission[];
 };
 
+=======
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
 export type User = {
   id: number;
   username: string;
   email: string;
   role: Role;
+<<<<<<< HEAD
   permissions: Permission[];
   customPermissions: PermissionOverrides;
 };
@@ -37,6 +41,8 @@ export type AuthSession = {
   username: string;
   permissions: Permission[];
   customPermissions: PermissionOverrides;
+=======
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
 };
 
 export type Status =

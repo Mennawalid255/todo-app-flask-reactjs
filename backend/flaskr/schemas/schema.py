@@ -1,7 +1,10 @@
 from marshmallow import fields
 from flaskr.schemas.plain_schema import (
+<<<<<<< HEAD
     PlainPermissionOverrideSchema,
     PlainRoleUpdateSchema,
+=======
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
     PlainSignInSchema,
     PlainTagSchema,
     PlainTaskSchema,
@@ -17,10 +20,13 @@ class SignInSchema(PlainSignInSchema):
     pass
 
 
+<<<<<<< HEAD
 class CurrentUserSchema(PlainUserSchema):
     pass
 
 
+=======
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
 class TagSchema(PlainTagSchema):
     pass
 
@@ -38,6 +44,7 @@ class AdminTaskSchema(TaskSchema):
 
 class UpdateTaskSchema(PlainTaskSchema):
     pass
+<<<<<<< HEAD
 
 
 class RoleUpdateSchema(PlainRoleUpdateSchema):
@@ -46,3 +53,5 @@ class RoleUpdateSchema(PlainRoleUpdateSchema):
 
 class PermissionOverrideSchema(PlainPermissionOverrideSchema):
     pass
+=======
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f

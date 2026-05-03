@@ -6,10 +6,18 @@ from flaskr.db import db
 from flaskr.models.tag_model import TagModel
 from flaskr.models.task_model import TaskModel
 from flaskr.models.user_model import UserModel
+<<<<<<< HEAD
 from flaskr.security import has_permission
 
 
 class TaskController:
+=======
+
+
+class TaskController:
+    MANAGER_ROLES = ["admin", "admin_manager"]
+
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
     @staticmethod
     def get_all():
         try:
@@ -74,7 +82,11 @@ class TaskController:
     def update(data, task_id):
         try:
             query = select(TaskModel).where(TaskModel.id == task_id)
+<<<<<<< HEAD
             if not has_permission(get_jwt(), "delete_any_task"):
+=======
+            if get_jwt().get("role") not in TaskController.MANAGER_ROLES:
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
                 query = query.where(TaskModel.user_id == int(get_jwt_identity()))
 
             task = db.session.execute(query).scalar_one()
@@ -95,7 +107,11 @@ class TaskController:
     def delete(task_id):
         try:
             query = select(TaskModel).where(TaskModel.id == task_id)
+<<<<<<< HEAD
             if not has_permission(get_jwt(), "delete_any_task"):
+=======
+            if get_jwt().get("role") not in TaskController.MANAGER_ROLES:
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
                 query = query.where(TaskModel.user_id == int(get_jwt_identity()))
 
             task = db.session.execute(query).scalar_one()
@@ -106,4 +122,8 @@ class TaskController:
             abort(404, message="Task not found")
         except SQLAlchemyError:
             db.session.rollback()
+<<<<<<< HEAD
             abort(500, message="Internal server error while deleting task")
+=======
+            abort(500, message="Internal server error while deleting task")
+>>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
