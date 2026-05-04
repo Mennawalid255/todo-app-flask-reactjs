@@ -1,15 +1,11 @@
 from flask_jwt_extended import create_access_token
 from flask_smorest import abort
 from sqlalchemy import select
-<<<<<<< HEAD
-from werkzeug.exceptions import HTTPException
-
-=======
-from sqlalchemy.exc import SQLAlchemyError
->>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
 from flaskr.db import db
 from flaskr.models.user_model import UserModel
 from flaskr.utils import check_password
+from flaskr.security import parse_permission_overrides
+from werkzeug.exceptions import HTTPException
 
 
 class AuthController:
@@ -29,16 +25,16 @@ class AuthController:
             if not check_password(user_registered.password, password):
                 abort(401, message="Incorrect credentials")
 
+            custom_permissions = parse_permission_overrides(
+                user_registered.permission_overrides_raw
+            )
+
             token = create_access_token(
                 identity=str(user_registered.id),
-<<<<<<< HEAD
                 additional_claims={
                     "role": user_registered.role,
                     "permissions": user_registered.permissions,
                 },
-=======
-                additional_claims={"role": user_registered.role},
->>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
             )
 
             return {
@@ -46,9 +42,11 @@ class AuthController:
                 "role": user_registered.role,
                 "userId": user_registered.id,
                 "username": user_registered.username,
-<<<<<<< HEAD
                 "permissions": user_registered.permissions,
-                "customPermissions": user_registered.custom_permissions,
+                "customPermissions": {
+                    "grants": custom_permissions.get("grants", []),
+                    "revokes": custom_permissions.get("revokes", []),
+                },
             }
 
         except HTTPException:
@@ -56,22 +54,3 @@ class AuthController:
         except Exception as e:
             print("ERROR:", str(e))
             abort(500, message=str(e))
-
-    @staticmethod
-    def me(user_id):
-        try:
-            return db.session.execute(
-                select(UserModel).where(UserModel.id == int(user_id))
-            ).scalar_one()
-        except HTTPException:
-            raise
-        except Exception as e:
-            print("ERROR:", str(e))
-            abort(500, message=str(e))
-=======
-            }
-
-        except Exception as e:
-            print("ERROR:", str(e))
-            abort(500, message=str(e))
->>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f

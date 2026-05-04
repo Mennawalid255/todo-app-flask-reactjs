@@ -8,16 +8,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-<<<<<<< HEAD
 import { isAdminRole } from "@/lib/roles";
 import { SignInFormSchema, TSignInFormSchema } from "@/schemas/auth-schema";
 import { useAuthStore } from "@/stores/auth-store";
 import { AuthSession, Role } from "@/types/types";
-=======
-import { SignInFormSchema, TSignInFormSchema } from "@/schemas/auth-schema";
-import { useAuthStore } from "@/stores/auth-store";
-import { Role } from "@/types/types";
->>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
 import { LoaderCircle } from "lucide-react";
@@ -41,16 +35,11 @@ export const SignInForm = () => {
 
   const onSubmit = async (formData: TSignInFormSchema) => {
     try {
-<<<<<<< HEAD
       const response = await axios.post<AuthSession>(
-=======
-      const response = await axios.post(
->>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
         "http://localhost:5000/api/v1/auth/sign-in",
         formData,
       );
 
-<<<<<<< HEAD
       const token = response.data.token;
       const role: Role = response.data.role;
       const userId = response.data.userId;
@@ -66,16 +55,6 @@ export const SignInForm = () => {
       );
 
       navigate(isAdminRole(role) ? "/admin" : "/dashboard");
-=======
-      const token: string = response.data.token;
-      const role: Role = response.data.role;
-      const userId: number = response.data.userId;
-      const username: string = response.data.username;
-
-      signIn(token, role, userId, username);
-
-      navigate("/dashboard");
->>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
     } catch (err) {
       if (err instanceof AxiosError) {
         toast.error(err.response?.data.message);

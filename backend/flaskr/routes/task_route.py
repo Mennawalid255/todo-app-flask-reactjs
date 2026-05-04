@@ -2,31 +2,19 @@ from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 from flask.views import MethodView
 from flaskr.controllers.task_controller import TaskController
-<<<<<<< HEAD
-from flaskr.security import permission_required
-from flaskr.schemas.schema import AdminTaskSchema, TaskSchema, UpdateTaskSchema
-
-=======
 from flaskr.schemas.schema import AdminTaskSchema, TaskSchema, UpdateTaskSchema
 from flaskr.utils import role_required
 from flaskr.decorators import role_required
->>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
 bp = Blueprint("tasks", __name__)
 
 
 @bp.route("/tasks")
 class Tasks(MethodView):
     @jwt_required()
-<<<<<<< HEAD
-    @permission_required("view_all_tasks")
-    @bp.response(200, AdminTaskSchema(many=True))
-    def get(self):
-=======
     @role_required("admin", "admin_viewer", "admin_manager")
     @bp.response(200, AdminTaskSchema(many=True))
     def get(self):
         """Admin route (JWT + admin role required)"""
->>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f
         return TaskController.get_all()
 
     @jwt_required()
@@ -56,15 +44,8 @@ class TaskById(MethodView):
         return TaskController.update(data, task_id)
 
     @jwt_required()
-<<<<<<< HEAD
-    @bp.response(204)
-    def delete(self, task_id):
-        """Protected route (JWT Required)"""
-        return TaskController.delete(task_id)
-=======
     @role_required("admin", "admin_manager")
     @bp.response(204)
     def delete(self, task_id):
       """Manager only - delete any task"""
       return TaskController.delete(task_id)
->>>>>>> 66c23344d9e2eba372aec5ca34b92d3cf77b8b5f

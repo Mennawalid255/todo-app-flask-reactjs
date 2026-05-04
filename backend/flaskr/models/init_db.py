@@ -9,7 +9,6 @@ app = create_app()
 
 with app.app_context():
     print("Connecting to database...")
-    # If the error persists, check if it's named 'database' below
     try:
         db.create_all() 
     except NameError:
